@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .product-list,.cart {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .item {
+        width: 30%;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .name {}
+
+    .pic {
+        padding: 20px;
+        height: 350px;
+    }
+
+    .pic img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .submit{
+        text-align: center;
+    }
+</style>
+
+<body>
+
+    <div id="app">
+        <hr>
+        <h1>商品列表</h1>
+        <hr>
+        <div class="product-list">
+            <div class="item" v-for="item in productList">
+                <div class="name">
+                    <h3>{{item.category}}</h3>
+                </div>
+                <div class="pic">
+                    <img :src="item.image" alt="">
+                </div>
+                <div class="price">
+                    <p>${{Math.floor(item.price)}}
+                    <p>
+                </div>
+                <div class="btn">
+                    <button type="button" @click="addCart(item)">購買</button>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h1>購物車</h1>
+        <hr>
+        <div class="cart">
+            <div class="item" v-for="item in cart">
+                <div class="name">
+                    <h3>{{item.category}}</h3>
+                </div>
+                <div class="pic">
+                    <img :src="item.image" alt="">
+                </div>
+                <div class="price">
+                    <p>${{Math.floor(item.price)}}
+                    <p>
+                </div>
+            </div>
+        </div>
+        <div class="submit">
+            <button @click="submit">送出訂單</button>
+        </div>
+        <div id="form"></div>
+    </div>
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const { createApp, ref, onMounted } = Vue
+
+        createApp({
+            setup() {
+                const productList = ref([])
+                const cart = ref([])
+                onMounted(() => {
+                    fetchProduct()
+                })
+
+                const fetchProduct = () => {
+                    axios.get("https://fakestoreapi.com/products/")
+                        .then((res) => {
+                            console.log('res', res.data)
+                            productList.value = res.data
+                        })
+                }
+
+                const submit = () => {
+
+                    let param = []
+
+                    for(let i=0;i<cart.value.length;i++){
+                        param.push({
+                            ItemName:cart.value[i].category,
+                            amount:Math.floor(cart.value[i].price)
+                        })
+                    }
+
+                    axios.post("http://localhost:3000/buy", param)
+                        .then((res) => {
+                            document.getElementById("form").innerHTML = res.data
+                            document.getElementById("_form_aiochk").submit()
+                        })
+                }
+
+                const addCart = (item) => {
+                    cart.value.push(item)
+                }
+
+         
+
+                return {
+                    submit,
+                    fetchProduct,
+                    productList,
+                    cart,
+                    addCart,
+
+                }
+            }
+        }).mount('#app')
+    </script>
+    <script>
+
+
+
+    </script>
+
+</body>
+
+</html>
