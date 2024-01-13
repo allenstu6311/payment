@@ -13,12 +13,8 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/', router);
 
-const MERCHANTID = 2000132
-const HASHKEY = "5294y06JbISpM5x9"
-const HASHIV = "v77hoKGq4kWxNNIS"
-const HOST = "http://127.0.0.1:5500/index.html"
-const url = "`https://dccbf1901db8e5cabf4d2ebbe23031c1.serveo.net"
 
+const url = "https://dccbf1901db8e5cabf4d2ebbe23031c1.serveo.net"
 const options = {
     "OperationMode": "Test", //Test or Production
     "MercProfile": {
@@ -60,7 +56,7 @@ router.post("/buy", (req, res) => {
         hour12: false,
         timeZone: 'UTC',
     });
-
+    // http://localhost:3000
     let TradeNo = 'test' + new Date().getTime();
     let base_param =
     {
@@ -70,7 +66,7 @@ router.post("/buy", (req, res) => {
         TradeDesc: '測試交易描述1#測試交易描述2',
         ItemName: ItemName,
         ReturnURL:`${url}/return`,
-        ClientBackURL: `${url}/clientReturn`,
+        ClientBackURL:`${url}/clientReturn`,
 
     }
 
@@ -80,7 +76,7 @@ router.post("/buy", (req, res) => {
     res.send(html)
 })
 
-
+//會在付款成功自動觸發
 app.post('/return', async (req, res) => {
     console.log('return:', req.body);
 
@@ -102,7 +98,7 @@ app.post('/return', async (req, res) => {
     res.send('1|OK');
 });
 
-// 用戶交易完成後的轉址
+// 用戶交易完成後的轉址(點擊返回商店)
 router.get('/clientReturn', (req, res) => {
     console.log('clientReturn:', req.body, req.query);
     res.sendFile(path.join(__dirname, 'result.html'));
