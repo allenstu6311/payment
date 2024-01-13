@@ -4,6 +4,7 @@ const axios = require("axios");
 const cors = require('cors');
 const ecpay_payment = require('ecpay_aio_nodejs');
 const router = express.Router();
+const path = require('path');
 
 const app = express();
 // 使用body-parser中间件来解析POST请求的数据
@@ -16,6 +17,7 @@ const MERCHANTID = 2000132
 const HASHKEY = "5294y06JbISpM5x9"
 const HASHIV = "v77hoKGq4kWxNNIS"
 const HOST = "http://127.0.0.1:5500/index.html"
+const url = "`https://dccbf1901db8e5cabf4d2ebbe23031c1.serveo.net"
 
 const options = {
     "OperationMode": "Test", //Test or Production
@@ -67,8 +69,8 @@ router.post("/buy", (req, res) => {
         TotalAmount: TotalAmount.toString(),
         TradeDesc: '測試交易描述1#測試交易描述2',
         ItemName: ItemName,
-        ReturnURL:`http://localhost:3000/return`,
-        ClientBackURL: `https://allenstu6311.github.io/payment/result.html`,
+        ReturnURL:`${url}/return`,
+        ClientBackURL: `${url}/clientReturn`,
 
     }
 
@@ -103,6 +105,7 @@ app.post('/return', async (req, res) => {
 // 用戶交易完成後的轉址
 router.get('/clientReturn', (req, res) => {
     console.log('clientReturn:', req.body, req.query);
+    res.sendFile(path.join(__dirname, 'result.html'));
     
 });
  // res.render('return', { query: req.query });

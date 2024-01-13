@@ -90,7 +90,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
         const { createApp, ref, onMounted } = Vue
-
+        const url = "`https://dccbf1901db8e5cabf4d2ebbe23031c1.serveo.net"
         createApp({
             setup() {
                 const productList = ref([])
@@ -118,7 +118,7 @@
                         })
                     }
 
-                    axios.post("http://localhost:3000/buy", param)
+                    axios.post(`${url}/buy`, param)
                         .then((res) => {
                             document.getElementById("form").innerHTML = res.data
                             document.getElementById("_form_aiochk").submit()
