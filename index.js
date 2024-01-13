@@ -68,7 +68,7 @@ router.post("/buy", (req, res) => {
         TradeDesc: '測試交易描述1#測試交易描述2',
         ItemName: ItemName,
         ReturnURL:`http://localhost:3000/return`,
-        ClientBackURL: `http://127.0.0.1:5500/result.html`,
+        ClientBackURL: `https://allenstu6311.github.io/payment/result.html`,
 
     }
 
@@ -103,8 +103,6 @@ app.post('/return', async (req, res) => {
 // 用戶交易完成後的轉址
 router.get('/clientReturn', (req, res) => {
     console.log('clientReturn:', req.body, req.query);
-   
-    axios.post("http://localhost:3000/return")
     
 });
  // res.render('return', { query: req.query });
