@@ -5,6 +5,7 @@ const cors = require('cors');
 const ecpay_payment = require('ecpay_aio_nodejs');
 const router = express.Router();
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 // 使用body-parser中间件来解析POST请求的数据
@@ -17,25 +18,25 @@ const url = "https://d56b11bcaf3d165aa7be3327b4f9907f.serveo.net"
  // http://localhost:3000
 
 //代理伺服器指令 ssh -R 80:localhost:3000 serveo.net
-
+const { MERCHANTID, HASHKEY, HASHIV } = process.env;
 
 const options = {
-    "OperationMode": "Test", //Test or Production
-    "MercProfile": {
-        "MerchantID": "2000132",
-        "HashKey": "5294y06JbISpM5x9",
-        "HashIV": "v77hoKGq4kWxNNIS"
+    OperationMode: 'Test', //Test or Production
+    MercProfile: {
+      MerchantID: MERCHANTID,
+      HashKey: HASHKEY,
+      HashIV: HASHIV,
     },
-    "IgnorePayment": [
-        //    "Credit",
-        //    "WebATM",
-        //    "ATM",
-        //    "CVS",
-        //    "BARCODE",
-        //    "AndroidPay"
+    IgnorePayment: [
+      //    "Credit",
+      //    "WebATM",
+      //    "ATM",
+      //    "CVS",
+      //    "BARCODE",
+      //    "AndroidPay"
     ],
-    "IsProjectContractor": false
-}
+    IsProjectContractor: false,
+  };
 
 router.post("/buy", (req, res) => {
     let param = req.body
@@ -60,7 +61,7 @@ router.post("/buy", (req, res) => {
         hour12: false,
         timeZone: 'UTC',
     });
-   
+
     let TradeNo = 'test' + new Date().getTime();
     let base_param =
     {
@@ -74,7 +75,6 @@ router.post("/buy", (req, res) => {
     }
 
     const create = new ecpay_payment(options);
-    // 注意：在此事直接提供 html + js 直接觸發的範例，直接從前端觸發付款行為
     const html = create.payment_client.aio_check_out_all(base_param);
     res.send(html)
 })
@@ -101,9 +101,8 @@ app.post('/return', async (req, res) => {
     res.send('1|OK');
 });
 
-// 用戶交易完成後的轉址(點擊返回商店)
+// 用戶交易完成後的轉址(點擊返回購買成功頁面)
 app.get('/clientReturn', (req, res) => {
-    console.log('clientReturn:', req.body, req.query);
     res.sendFile(path.join(__dirname, 'result.html'));
     
 });
