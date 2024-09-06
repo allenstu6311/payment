@@ -8,24 +8,22 @@
   <body>
     <div id="app">
       <button onclick="submit()">submit</button>
+      <button onclick="query()">query</button>
     </div>
 
     <script>
-      const merData = {
-        MerID: "AAA",
-        MerTradeNo: "BBB",
-        ProdDesc: "商品說明;test;test",
-        TradeAmt: 1000,
-        Timestamp: Math.floor(Date.now() / 1000),
-      };
-
-      // 使用 URLSearchParams 來模擬 querystring.stringify
-      const plaintext = new URLSearchParams(merData).toString();
-      const merKey = "iWPMCeg8mDyOorv1pHgYq94OMtUEsqvr";
-      const merIv = new TextEncoder().encode("Hz7nzyXxORLOPRyx");
-
       function submit() {
+        const merData = {
+          MerID: "AAA",
+          MerTradeNo: "BBB",
+          ProdDesc: "商品說明;test;test",
+          TradeAmt: 1000,
+          Timestamp: Math.floor(Date.now() / 1000),
+        };
+
+        // 使用 URLSearchParams 來模擬 querystring.stringify
         const params = new URLSearchParams(merData).toString();
+        console.log("params", params);
         fetch(`http://localhost:3000/pay?${params}`, {
           method: "GET",
           // body:JSON.stringify(merData)
@@ -36,6 +34,23 @@
             document.body.insertAdjacentHTML("beforeend", data);
             document.forms["payForm"].submit();
           });
+      }
+
+      function query() {
+        const queryData = {
+          MerID: "AAA",
+          MerTradeNo: "BBB",
+          Timestamp: Math.floor(Date.now() / 1000),
+        };
+        const params = new URLSearchParams(queryData).toString();
+        fetch(`http://localhost:3000/query?${params}`, {
+          method: "GET",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+          });
+
       }
     </script>
   </body>

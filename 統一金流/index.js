@@ -42,23 +42,26 @@ function sha256(encryptStr, key, iv) {
  * @returns {string} - 解密結果
  */
 function decrypt(encryptStr, key, iv) {
-  const [encryptData, tag] = Buffer.from(encryptStr, 'hex').toString().split(':::');
+  const [encryptData, tag] = Buffer.from(encryptStr, "hex")
+    .toString()
+    .split(":::");
 
-  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
-  decipher.setAuthTag(Buffer.from(tag, 'base64'));
+  const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
+  decipher.setAuthTag(Buffer.from(tag, "base64"));
 
-  let decipherText = decipher.update(encryptData, 'base64', 'utf8');
-  decipherText += decipher.final('utf8');
+  let decipherText = decipher.update(encryptData, "base64", "utf8");
+  decipherText += decipher.final("utf8");
 
   return decipherText;
 }
+
+const merKey = "iWPMCeg8mDyOorv1pHgYq94OMtUEsqvr";
+const merIv = Buffer.from("Hz7nzyXxORLOPRyx");
 
 app.get("/pay", (req, res) => {
   const merData = req.query;
 
   const plaintext = querystring.stringify(merData);
-  const merKey = "iWPMCeg8mDyOorv1pHgYq94OMtUEsqvr";
-  const merIv = Buffer.from("Hz7nzyXxORLOPRyx");
 
   const getEncrypt = encrypt(plaintext, merKey, merIv);
   // const getDecrypt = decrypt(getEncrypt, merKey, merIv)
@@ -73,6 +76,36 @@ app.get("/pay", (req, res) => {
       </form>
   `;
   res.send(htmlForm);
+});
+
+/**
+ * 查詢交易紀錄
+ */
+app.get("/query", (req, res) => {
+  const queryData = req.query;
+  const plaintext = querystring.stringify(queryData);
+  const getEncrypt = encrypt(plaintext, merKey, merIv);
+  const getSha256 = sha256(getEncrypt, merKey, merIv);
+
+  const formData = new FormData();
+  formData.append("MerID", "S04110732");
+  formData.append("Version", "1.0");
+  formData.append("EncryptInfo", getEncrypt);
+  formData.append("HashInfo", getSha256);
+
+  axios
+    .post("https://sandbox-api.payuni.com.tw/api/trade/query", formData)
+    .then((response) => {
+      const getDecrypt = new URLSearchParams(
+        decrypt(response.data.EncryptInfo, merKey, merIv)
+      );
+      const result = {};
+      getDecrypt.forEach((value, key) => {
+        const text = key.match(/[^[\]]+/g);
+        result[text[text.length - 1]] = value;
+      });
+      res.send(result);
+    });
 });
 
 app.listen(3000, () => {

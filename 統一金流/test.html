@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const data =
+        "Status=SUCCESS&Message=%E6%9F%A5%E8%A9%A2%E6%88%90%E5%8A%9F&Result%5B0%5D%5BMerTradeNo%5D=BBB&Result%5B0%5D%5BTradeNo%5D=1725628726362145790&Result%5B0%5D%5BTradeAmt%5D=1000&Result%5B0%5D%5BTradeStatus%5D=9&Result%5B0%5D%5BPaymentType%5D=2&Result%5B0%5D%5BPaymentDay%5D=0000-00-00+00%3A00%3A00&Result%5B0%5D%5BCreateDay%5D=2024-09-06+21%3A18%3A46&Result%5B0%5D%5BGateway%5D=2&Result%5B0%5D%5BOffChannel%5D=822&Result%5B0%5D%5BOffPayChannel%5D=-&Result%5B0%5D%5BOffPayNo%5D=8220100000047651&Result%5B0%5D%5BOffExpireTime%5D=2024-09-13+23%3A59%3A59";
+
+      const urlParam = new URLSearchParams(data);
+      const result = {}
+      urlParam.forEach((item, key) => {
+        // if (key.includes("[")) {
+        //   const start = key.lastIndexOf("[");
+        //   const end = key.lastIndexOf("]");
+        //   const text = key.substring(start + 1, end);
+        //   result[text] = item;
+        // }
+        const text = key.match(/[^[\]]+/g);
+        result[text[text.length-1]] = item
+        console.log('text',text)
+      });
+
+      console.log(result)
+    </script>
+  </body>
+</html>
