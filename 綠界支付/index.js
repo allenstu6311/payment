@@ -18,7 +18,15 @@ const url = "https://d56b11bcaf3d165aa7be3327b4f9907f.serveo.net"
  // http://localhost:3000
 
 //代理伺服器指令 ssh -R 80:localhost:3000 serveo.net
-const { MERCHANTID, HASHKEY, HASHIV } = process.env;
+
+const testId = {
+    MERCHANTID: "3002607",
+    HASHKEY:'pwFHCqoQZGmho4w6',
+    HASHIV:'EkRm7iFT261dpevs'
+}
+// const { MERCHANTID, HASHKEY, HASHIV } = process.env;
+const { MERCHANTID, HASHKEY, HASHIV } = testId;
+console.log('MERCHANTID',MERCHANTID)
 
 const options = {
     OperationMode: 'Test', //Test or Production
@@ -40,10 +48,8 @@ const options = {
 
 router.post("/buy", (req, res) => {
     let param = req.body
-    console.log(param)
-
     let ItemName = ''
-    let TotalAmount = 0
+    let TotalAmount = 1
 
     for (let i = 0; i < param.length; i++) {
         ItemName += param[i].ItemName + (i != param.length-1? "#":'')

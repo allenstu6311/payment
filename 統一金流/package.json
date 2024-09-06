@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.19.2",
+    "FormData": "^0.10.1",
+    "querystring": "^0.2.1"
+  }
+}

@@ -1,3 +1,4 @@
-/node_modules
+/統一金流/node_modules
+/綠界支付/node_modules
 package-lock.json
 .env

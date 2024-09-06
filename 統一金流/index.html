@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <button onclick="submit()">submit</button>
+    </div>
+
+    <script>
+      const merData = {
+        MerID: "AAA",
+        MerTradeNo: "BBB",
+        ProdDesc: "商品說明;test;test",
+        TradeAmt: 1000,
+        Timestamp: Math.floor(Date.now() / 1000),
+      };
+
+      // 使用 URLSearchParams 來模擬 querystring.stringify
+      const plaintext = new URLSearchParams(merData).toString();
+      const merKey = "iWPMCeg8mDyOorv1pHgYq94OMtUEsqvr";
+      const merIv = new TextEncoder().encode("Hz7nzyXxORLOPRyx");
+
+      function submit() {
+        const params = new URLSearchParams(merData).toString();
+        fetch(`http://localhost:3000/pay?${params}`, {
+          method: "GET",
+          // body:JSON.stringify(merData)
+        })
+          .then((res) => res.text())
+          .then((data) => {
+            console.log(data);
+            document.body.insertAdjacentHTML("beforeend", data);
+            document.forms["payForm"].submit();
+          });
+      }
+    </script>
+  </body>
+</html>
